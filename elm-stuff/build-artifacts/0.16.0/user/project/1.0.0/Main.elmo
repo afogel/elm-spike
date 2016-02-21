@@ -1,0 +1,48 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values) return _elm.Main.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Keyboard = Elm.Keyboard.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Mouse = Elm.Mouse.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      switch (_p0.ctor)
+      {case "MouseClick": return _U.update(model,{count: model.count + 1});
+         case "KeyPress": return _U.update(model,{count: model.count - 1});
+         default: return model;}
+   });
+   var view = function (model) {    return $Html.text($Basics.toString(model.count));};
+   var initialModel = {count: 0};
+   var KeyPress = {ctor: "KeyPress"};
+   var keyPressSignal = A2($Signal.map,function (_p1) {    return KeyPress;},$Keyboard.presses);
+   var MouseClick = {ctor: "MouseClick"};
+   var mouseClickSignal = A2($Signal.map,function (_p2) {    return MouseClick;},$Mouse.clicks);
+   var actionSignal = A2($Signal.merge,mouseClickSignal,keyPressSignal);
+   var modelSignal = A3($Signal.foldp,update,initialModel,actionSignal);
+   var main = A2($Signal.map,view,modelSignal);
+   var NoOp = {ctor: "NoOp"};
+   var Model = function (a) {    return {count: a};};
+   return _elm.Main.values = {_op: _op
+                             ,Model: Model
+                             ,NoOp: NoOp
+                             ,MouseClick: MouseClick
+                             ,KeyPress: KeyPress
+                             ,initialModel: initialModel
+                             ,view: view
+                             ,update: update
+                             ,mouseClickSignal: mouseClickSignal
+                             ,keyPressSignal: keyPressSignal
+                             ,actionSignal: actionSignal
+                             ,modelSignal: modelSignal
+                             ,main: main};
+};
